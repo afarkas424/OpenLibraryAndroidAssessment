@@ -3,6 +3,9 @@ package com.example.openlibraryandroidassessment.data.models
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * Serializable data class for parsing in Book information from OpenLibrary API responses
+ */
 @Serializable
 data class BookData(
     val author_key: List<String> = emptyList(),
@@ -14,7 +17,9 @@ data class BookData(
     val subject: List<String> = emptyList()
 )
 
-
+/**
+ * Serializable data class for handling pagination in parsing OpenLibrary API query responses
+ */
 @Serializable
 data class BookQueryResponse(
     @SerialName("numFound") val numFound: Int?,

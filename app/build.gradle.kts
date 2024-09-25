@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.coil.kt.coil.compose)
     implementation(libs.okhttp)
+    implementation(libs.androidx.runtime.livedata)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

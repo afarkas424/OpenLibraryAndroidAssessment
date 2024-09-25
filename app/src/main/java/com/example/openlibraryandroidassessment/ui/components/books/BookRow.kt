@@ -34,7 +34,7 @@ fun BookRow(
     ) {
         // Async image for the book cover
         AsyncImage(
-            model = book.imageUrl,
+            model = book.imageURLBase.toString().plus("-S.jpg"),
             contentDescription = "Book cover",
             modifier = Modifier
                 .size(60.dp) // Adjust size as needed
@@ -51,7 +51,7 @@ fun BookRow(
                 color = Color.Black
             )
             Text(
-                text = book.publishingInfo,
+                text = "${book.publishedYear}, ${book.authors}",
                 color = Color.Gray
             )
         }
@@ -71,9 +71,11 @@ fun BookRowPreview() {
     val populatedBook = Book(
         id = 1,
         title = "Infinite Jest",
-        publishingInfo = "David Foster Wallace",
-        subjectId = 1,
-        imageUrl = "https://covers.openlibrary.org/b/id/10071047-S.jpg"
+        authors = "David Foster Wallace",
+        imageURLBase = "https://covers.openlibrary.org/b/id/10071047",
+        detailsKey = "",
+        publishedYear = 1999
+
     )
     BookRow(
         book = populatedBook,

@@ -21,7 +21,12 @@ import com.example.openlibraryandroidassessment.ui.theme.Typography
  * Subject Row stateless composable
  */
 @Composable
-fun SubjectRow(name: String, count: String, subjectID: String, navigateToBookScreen: (String) -> Unit) {
+fun SubjectRow(
+    name: String,
+    count: String,
+    subjectID: String,
+    navigateToBookScreen: (String) -> Unit
+) {
     // Row layout for the subject
     Row(
         modifier = Modifier
@@ -65,7 +70,7 @@ fun SubjectRow(name: String, count: String, subjectID: String, navigateToBookScr
 @Preview
 @Composable
 fun SubjectRowPreview() {
-    val populatedSubject = Subject( id = 1, name = "Science Fiction", count = 37)
+    val populatedSubject = Subject(id = 1, name = "Science Fiction", count = 37)
     SubjectRow(
         name = populatedSubject.name,
         count = populatedSubject.count.toString(),
