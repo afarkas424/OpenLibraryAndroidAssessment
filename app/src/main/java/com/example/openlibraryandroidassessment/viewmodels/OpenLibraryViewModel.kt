@@ -17,11 +17,16 @@ class OpenLibraryViewModel(
 
     val bookList: LiveData<List<Book>> = bookRepo.bookList
 
+    val selectedSubjectTitle: LiveData<String> = bookRepo.selectedSubjectTitle
+
     val bookDetails: LiveData<String> = bookRepo.bookDetails
 
     fun onSubjectClicked(subjectId: Int) {
         // inform the repo of the selected subject and load desired books
         bookRepo.getBooksForSelectedSubjectFromLocalDatabase(subjectId)
+
+        // get name of selected subject and post to view model
+
     }
 
     fun onBookClicked(bookID: Int) {

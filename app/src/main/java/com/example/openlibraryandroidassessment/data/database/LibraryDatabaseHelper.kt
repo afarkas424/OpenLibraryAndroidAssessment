@@ -165,6 +165,28 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
         return booksList
     }
 
+    fun getSubjectNameById(subjectId: Int): String? {
+        val db = writableDatabase
+        var subjectName: String? = null
+
+        // Query to retrieve the subject name by its ID
+        val query = "SELECT name FROM subjects WHERE id = ?"
+
+        // Execute the query
+        val cursor = db.rawQuery(query, arrayOf(subjectId.toString()))
+
+        // Loop through the results
+        if (cursor.moveToFirst()) {
+            val nameColumnIndex = cursor.getColumnIndex("name")
+            if (nameColumnIndex != -1) {
+                subjectName = cursor.getString(nameColumnIndex)
+            }
+        }
+
+        cursor.close()
+        return subjectName
+    }
+
     fun wipeDataBase() {
         val db = writableDatabase
         db.execSQL("DELETE FROM books")

@@ -20,6 +20,9 @@ class BookDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
     private val _bookList = MutableLiveData<List<Book>>()
     val bookList: LiveData<List<Book>> get() = _bookList
 
+    private val _selectedSubjectTitle = MutableLiveData<String>()
+    val selectedSubjectTitle: LiveData<String> get() = _selectedSubjectTitle
+
     private val _bookDetails = MutableLiveData<String>()
     val bookDetails: LiveData<String> get() = _bookDetails
 
@@ -43,6 +46,10 @@ class BookDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
     fun getBooksForSelectedSubjectFromLocalDatabase(subjectID: Int) {
         val books = bookDatabase.getBooksBySubjectId(subjectID)
         _bookList.postValue(books)
+
+        val selectedSubjectName = bookDatabase.getSubjectNameById(subjectID)
+        // also post the name of the selected subject
+        _selectedSubjectTitle.postValue(selectedSubjectName ?: "Books")
     }
 
     /**

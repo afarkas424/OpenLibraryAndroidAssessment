@@ -15,43 +15,25 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.LiveData
 import com.example.openlibraryandroidassessment.data.models.Book
-import com.example.openlibraryandroidassessment.ui.components.subjects.SubjectsScreen
 
 @Composable
 fun BooksScreen(
     /**book view model*/
     navigateBack: () -> Unit,
     navigateToBookDetails: (route: String) -> Unit,
-    booksLiveData: LiveData<List<Book>>
+    booksLiveData: LiveData<List<Book>>,
+    subjectNameLiveData: LiveData<String>
 ) {
     // TODO: Retrieve books for the given subject ID and display them in a list
-//    val populatedBook = Book(
-//        id = 1,
-//        title = "Infinite Jest",
-//        authors = "David Foster Wallace",
-//        imageURLBase = "https://covers.openlibrary.org/b/id/10071047",
-//        detailsKey = "",
-//        publishedYear = 1999
-//
-//    )
-//    val populatedBook2 = Book(
-//        id = 2,
-//        title = "1984",
-//        authors = "David Foster Wallace",
-//        detailsKey = "",
-//        imageURLBase = "https://covers.openlibrary.org/b/id/12919048",
-//        publishedYear = 1984
-//    )
-//    val books = listOf(
-//        populatedBook, populatedBook2
-//    )
 
     val books = booksLiveData.observeAsState().value
+    val subjectName = subjectNameLiveData.observeAsState().value
     if (books != null) {
         BooksScreen(
             books = books,
             navigateBack = navigateBack,
-            navigateToBookDetails = navigateToBookDetails
+            navigateToBookDetails = navigateToBookDetails,
+            subjectName = subjectName ?: "Books"
         )
     } else {
         // Todo: Make a loading spinner instead of text
@@ -69,11 +51,13 @@ fun BooksScreen(
 fun BooksScreen(
     books: List<Book>,
     navigateBack: () -> Unit,
-    navigateToBookDetails: (route:String) -> Unit
+    navigateToBookDetails: (route: String) -> Unit,
+    subjectName: String
 ) {
     Column {
         CenterAlignedTopAppBar(
-            title = { Text("Books") },
+            // todo MAKE THIS THE TITLE OF THE SELECTED SUBJECT
+            title = { Text(subjectName) },
             navigationIcon = {
                 IconButton(onClick = { navigateBack.invoke() }) {
                     Icon(
@@ -122,7 +106,8 @@ fun BooksScreenPreview() {
     BooksScreen(
         books = books,
         navigateBack = {},
-        navigateToBookDetails = {}
+        navigateToBookDetails = {},
+        subjectName = "Science Fiction"
     )
 
 }

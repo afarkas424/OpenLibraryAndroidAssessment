@@ -35,7 +35,8 @@ fun NavigationSetup(
             BooksScreen(
                 navigateBack = { navHostController.popBackStack() },
                 navigateToBookDetails = { route:String -> navHostController.navigate(route) },
-                booksLiveData = viewModel.bookList
+                booksLiveData = viewModel.bookList,
+                subjectNameLiveData = viewModel.selectedSubjectTitle
             )
         }
         composable("bookDetails/{bookId}") { backStackEntry ->

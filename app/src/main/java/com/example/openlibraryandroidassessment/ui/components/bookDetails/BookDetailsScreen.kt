@@ -21,7 +21,7 @@ import com.example.openlibraryandroidassessment.data.models.BookDetails
 import com.example.openlibraryandroidassessment.ui.theme.Typography
 
 /**
- * Stateful book details composable
+ * Stateful composable for Displaying the list of books relevant to the selected subject
  */
 @Composable
 fun BookDetailsScreen(/**book details view model*/ navController: NavController) {
@@ -45,7 +45,12 @@ fun BookDetailsScreen(/**book details view model*/ navController: NavController)
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookDetailsScreen(imageUrl:String, text:String, title: String, navigate: () -> Unit) {
+fun BookDetailsScreen(
+    imageUrl:String,
+    text:String,
+    title: String,
+    navigate: () -> Unit
+) {
     Column {
         CenterAlignedTopAppBar(
             title = { Text(title) },

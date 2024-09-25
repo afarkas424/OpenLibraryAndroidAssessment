@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,7 +27,7 @@ fun SubjectRow(
     count: String,
     subjectID: String,
     navigateToBookScreen: (String) -> Unit
-) {
+    ) {
     // Row layout for the subject
     Row(
         modifier = Modifier
@@ -59,7 +60,7 @@ fun SubjectRow(
             )
             // Chevron icon
             Icon(
-                imageVector = Icons.Default.ArrowForward,
+                imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = "Navigate",
                 tint = Color.Gray
             )
@@ -70,7 +71,7 @@ fun SubjectRow(
 @Preview
 @Composable
 fun SubjectRowPreview() {
-    val populatedSubject = Subject(id = 1, name = "Science Fiction", count = 37)
+    val populatedSubject = Subject( id = 1, name = "Science Fiction", count = 37)
     SubjectRow(
         name = populatedSubject.name,
         count = populatedSubject.count.toString(),
