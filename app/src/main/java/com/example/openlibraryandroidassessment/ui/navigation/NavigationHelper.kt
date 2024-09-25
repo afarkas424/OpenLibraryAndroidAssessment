@@ -43,7 +43,10 @@ fun NavigationSetup(
             val bookId = backStackEntry.arguments?.getString("bookId") ?: ""
             // todo: send selected ID to the desired View Model to post to shared flow
             viewModel.onBookClicked(bookId.toInt())
-            BookDetailsScreen(navHostController)
+            BookDetailsScreen(
+                bookDetails = viewModel.bookDetails,
+                navController = navHostController
+            )
         }
     }
 }

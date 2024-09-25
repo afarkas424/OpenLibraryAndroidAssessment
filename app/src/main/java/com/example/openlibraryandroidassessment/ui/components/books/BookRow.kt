@@ -10,10 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.openlibraryandroidassessment.R
 import com.example.openlibraryandroidassessment.data.models.Book
 
 
@@ -38,7 +40,9 @@ fun BookRow(
             contentDescription = "Book cover",
             modifier = Modifier
                 .size(60.dp) // Adjust size as needed
-                .padding(end = 16.dp)
+                .padding(end = 16.dp),
+            error = painterResource(id = R.drawable.image_placeholder),
+            placeholder = painterResource(id = R.drawable.image_placeholder)
         )
 
         // Column for title and author

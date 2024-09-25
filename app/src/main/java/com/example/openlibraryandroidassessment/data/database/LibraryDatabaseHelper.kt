@@ -187,6 +187,41 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
         return subjectName
     }
 
+    fun getBookById(bookId: Int): Book {
+        val db = readableDatabase
+        val cursor = db.query(
+            "books",
+            null,
+            "id = ?",
+            arrayOf(bookId.toString()),
+            null,
+            null,
+            null
+        )
+
+        cursor.moveToFirst()
+
+        val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+        val title = cursor.getString(cursor.getColumnIndexOrThrow("title"))
+        val authors = cursor.getString(cursor.getColumnIndexOrThrow("authors"))
+        val imageNum = cursor.getInt(cursor.getColumnIndexOrThrow("image_num"))
+        val publishedYear = cursor.getInt(cursor.getColumnIndexOrThrow("published_year"))
+        val detailsKey = cursor.getString(cursor.getColumnIndexOrThrow("details_key"))
+
+        val book = Book(
+            id = id,
+            title = title,
+            authors = authors,
+            imageURLBase = imageNum.toString(),
+            publishedYear = publishedYear,
+            detailsKey = detailsKey
+        )
+
+        cursor.close()
+
+        return book
+    }
+
     fun wipeDataBase() {
         val db = writableDatabase
         db.execSQL("DELETE FROM books")

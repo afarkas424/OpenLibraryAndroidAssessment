@@ -2,9 +2,13 @@ package com.example.openlibraryandroidassessment.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.openlibraryandroidassessment.data.models.Book
+import com.example.openlibraryandroidassessment.data.models.BookDetailsScreenInformation
 import com.example.openlibraryandroidassessment.data.models.Subject
 import com.example.openlibraryandroidassessment.data.repositories.BookDataRepo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class OpenLibraryViewModel(
     private val bookRepo: BookDataRepo
@@ -19,17 +23,21 @@ class OpenLibraryViewModel(
 
     val selectedSubjectTitle: LiveData<String> = bookRepo.selectedSubjectTitle
 
-    val bookDetails: LiveData<String> = bookRepo.bookDetails
+    val bookDetails: LiveData<BookDetailsScreenInformation> = bookRepo.bookDetails
 
     fun onSubjectClicked(subjectId: Int) {
         // inform the repo of the selected subject and load desired books
-        bookRepo.getBooksForSelectedSubjectFromLocalDatabase(subjectId)
+        viewModelScope.launch(Dispatchers.IO) {
+            bookRepo.getBooksForSelectedSubjectFromLocalDatabase(subjectId)
+        }
 
-        // get name of selected subject and post to view model
 
     }
 
     fun onBookClicked(bookID: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            bookRepo.retrieveAndPostBookDetailsScreenData(bookID)
+        }
 
     }
 

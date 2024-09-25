@@ -1,13 +1,18 @@
 package com.example.openlibraryandroidassessment.data.repositories
 
+import android.util.EventLogTags
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.openlibraryandroidassessment.data.database.LibraryDatabaseHelper
 import com.example.openlibraryandroidassessment.data.models.Book
 import com.example.openlibraryandroidassessment.data.models.BookData
+import com.example.openlibraryandroidassessment.data.models.BookDetailsScreenInformation
 import com.example.openlibraryandroidassessment.data.models.BookQueryResponse
+import com.example.openlibraryandroidassessment.data.models.Description
 import com.example.openlibraryandroidassessment.data.models.Subject
+import com.example.openlibraryandroidassessment.data.models.WorkResponse
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -23,8 +28,8 @@ class BookDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
     private val _selectedSubjectTitle = MutableLiveData<String>()
     val selectedSubjectTitle: LiveData<String> get() = _selectedSubjectTitle
 
-    private val _bookDetails = MutableLiveData<String>()
-    val bookDetails: LiveData<String> get() = _bookDetails
+    private val _bookDetails: MutableLiveData<BookDetailsScreenInformation> = MutableLiveData<BookDetailsScreenInformation>()
+    val bookDetails: LiveData<BookDetailsScreenInformation> get() = _bookDetails
 
     /**
      * Fetches book and subject data, inserts it to SQLite database.
@@ -51,6 +56,67 @@ class BookDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
         // also post the name of the selected subject
         _selectedSubjectTitle.postValue(selectedSubjectName ?: "Books")
     }
+
+    suspend fun retrieveAndPostBookDetailsScreenData(bookID: Int) {
+        // need book title, book image, and to fetch details
+        val selectedBook = bookDatabase.getBookById(bookID)
+
+
+        val details = fetchBookDetailsFromOpenLibraryAPI(selectedBook.detailsKey)
+        // construct and post book details
+        val detailsScreenInfo = BookDetailsScreenInformation(
+            title = selectedBook.title,
+            imgURL = "https://covers.openlibrary.org/b/id/${selectedBook.imageURLBase.plus("-L.jpg")}",
+            description = details ?: "Description could not be found"
+        )
+        _bookDetails.postValue(detailsScreenInfo)
+
+    }
+
+    private fun fetchBookDetailsFromOpenLibraryAPI(detailsKey: String): String? {
+        val client = OkHttpClient()
+        val url = "https://openlibrary.org$detailsKey.json"
+        val request = Request.Builder()
+            .url(url)
+            .build()
+        val json = Json { ignoreUnknownKeys = true }
+
+        return try {
+            client.newCall(request).execute().use { response ->
+                if (response.isSuccessful) {
+                    val jsonResponse = response.body?.string()
+                    if (jsonResponse != null) {
+                        // Log the response for debugging
+                        println("Response JSON: $jsonResponse")
+
+                        // Use the companion object method to handle variability
+                        val workResponse = json.decodeFromString<JsonElement>(jsonResponse).let {
+                            WorkResponse.fromJsonElement(it)
+                        }
+
+                        when (val desc = workResponse.description) {
+                            is Description.Simple -> desc.value
+                            is Description.Complex -> desc.value // Adjust according to your needs
+                            null -> null
+                        }
+                    } else {
+                        // Handle null response body
+                        null
+                    }
+                } else {
+                    // Log the unsuccessful response
+                    println("Failed response: ${response.code} - ${response.message}")
+                    null
+                }
+            }
+        } catch (e: Exception) {
+            // Log the exception
+            println("Error fetching book details: ${e.message}")
+            null
+        }
+    }
+
+
 
     /**
      * Searches open library for all Star Wars books. Iterates through paginated responss and parses
@@ -80,6 +146,8 @@ class BookDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
 
             val jsonResponse = response.body?.string()
             jsonResponse?.let {
+
+
                 val json = Json { ignoreUnknownKeys = true }
                 val bookQueryResponse = json.decodeFromString<BookQueryResponse>(it)
                 val responseBooks = bookQueryResponse.docs

@@ -49,7 +49,9 @@ fun SubjectsScreen(
 fun SubjectsScreen(subjects: List<Subject>, navigateToBookScreen: (String) -> Unit) {
     Column {
         CenterAlignedTopAppBar(
-            title = { Text("Subjects") },
+            title = { Text(
+                text = "Subjects"
+            )},
         )
         LazyColumn {
             items(subjects) { subject ->
