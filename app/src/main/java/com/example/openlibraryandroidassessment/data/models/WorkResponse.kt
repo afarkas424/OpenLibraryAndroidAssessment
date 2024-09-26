@@ -8,7 +8,9 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
 /**
- * Sealed Class to accounbt for polymorphic deserialization of /work request to get book descriptions
+ * Sealed class representing descriptions for a book.
+ * This allows for polymorphic deserialization of the book description
+ * returned by the Open Library API.
  */
 @Serializable
 sealed class Description {
@@ -19,6 +21,11 @@ sealed class Description {
     data class Complex(val value: String) : Description()
 }
 
+/**
+ * Data class representing the response for a book's work information from the Open Library API.
+ *
+ * @property description The description of the book, which can be of type [Description].
+ */
 @Serializable
 data class WorkResponse(
     val description: Description?
@@ -29,8 +36,10 @@ data class WorkResponse(
             val descriptionElement = jsonObject["description"]
 
             val description = when {
+                // if description is a string, return that
                 descriptionElement is JsonPrimitive && descriptionElement.isString ->
                     Description.Simple(descriptionElement.content)
+                // if description is a struct with text in the "value" field, grab the value
                 descriptionElement is JsonObject ->
                     Description.Complex(descriptionElement["value"]?.jsonPrimitive?.content ?: "")
                 else -> null

@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import com.example.openlibraryandroidassessment.data.models.Book
 import com.example.openlibraryandroidassessment.data.models.BookData
 import com.example.openlibraryandroidassessment.data.models.Subject
@@ -15,36 +16,32 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
         private const val DATABASE_VERSION = 1
     }
 
+    // SQL Table Creation Strings
+    private val CREATE_SUBJECTS_TABLE = "CREATE TABLE subjects (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)"
+    private val CREATE_BOOKS_TABLE = """
+        CREATE TABLE books (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            authors TEXT,
+            image_num NUM,
+            published_year NUM,
+            details_key TEXT
+        )
+    """
+    private val CREATE_BOOK_SUBJECT_TABLE = """
+        CREATE TABLE book_subject (
+            book_id INTEGER,
+            subject_id INTEGER,
+            FOREIGN KEY (book_id) REFERENCES books(id),
+            FOREIGN KEY (subject_id) REFERENCES subjects(id),
+            PRIMARY KEY (book_id, subject_id)
+        )
+    """
+
     override fun onCreate(db: SQLiteDatabase) {
-        // table of only subjects
-        val createSubjectsTable =
-            "CREATE TABLE subjects (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)"
-        db.execSQL(createSubjectsTable)
-
-        // table of only books
-        val createBooksTable = """
-            CREATE TABLE books (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT NOT NULL,
-                authors TEXT,
-                image_num NUM,
-                published_year NUM,
-                details_key TEXT
-            )
-        """
-        db.execSQL(createBooksTable)
-
-        // table of books and subjects
-        val createBookSubjectTable = """
-            CREATE TABLE book_subject (
-                book_id INTEGER,
-                subject_id INTEGER,
-                FOREIGN KEY (book_id) REFERENCES books(id),
-                FOREIGN KEY (subject_id) REFERENCES subjects(id),
-                PRIMARY KEY (book_id, subject_id)
-            )
-        """
-        db.execSQL(createBookSubjectTable)
+        db.execSQL(CREATE_SUBJECTS_TABLE)
+        db.execSQL(CREATE_BOOKS_TABLE)
+        db.execSQL(CREATE_BOOK_SUBJECT_TABLE)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -106,7 +103,12 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
                             put("book_id", bookId)
                             put("subject_id", subjectId)
                         }
-                        db.insert("book_subject", null, bookSubjectValues)
+                        try {
+                            db.insert("book_subject", null, bookSubjectValues)
+                        } catch (e: Exception) {
+                            Log.e("LibraryDatabaseHelper", "Error inserting into book_subject: ${e.message}", e)
+                        }
+
                     }
                 }
             }
@@ -232,8 +234,8 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
     fun groupBooksBySubjectAndMapToSubjectStruct(): Map<String, Subject> {
         val db = writableDatabase
         val query = """
-        SELECT subjects.name AS subject, 
-               subjects.id AS subject_id, 
+        SELECT subjects.name AS subject,
+               subjects.id AS subject_id,
                COUNT(books.id) AS book_count
         FROM subjects
         JOIN book_subject ON subjects.id = book_subject.subject_id

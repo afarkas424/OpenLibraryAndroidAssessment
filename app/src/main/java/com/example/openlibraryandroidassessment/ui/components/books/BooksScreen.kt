@@ -1,5 +1,6 @@
 package com.example.openlibraryandroidassessment.ui.components.books
 
+import LoadingScreen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,8 +25,6 @@ fun BooksScreen(
     booksLiveData: LiveData<List<Book>>,
     subjectNameLiveData: LiveData<String>
 ) {
-    // TODO: Retrieve books for the given subject ID and display them in a list
-
     val books = booksLiveData.observeAsState().value
     val subjectName = subjectNameLiveData.observeAsState().value
     if (books != null) {
@@ -36,8 +35,7 @@ fun BooksScreen(
             subjectName = subjectName ?: "Books"
         )
     } else {
-        // Todo: Make a loading spinner instead of text
-        Text("loading books...")
+        LoadingScreen("Please allow 12-13 seconds to load library data")
     }
 
 
@@ -56,7 +54,6 @@ fun BooksScreen(
 ) {
     Column {
         CenterAlignedTopAppBar(
-            // todo MAKE THIS THE TITLE OF THE SELECTED SUBJECT
             title = { Text(subjectName) },
             navigationIcon = {
                 IconButton(onClick = { navigateBack.invoke() }) {

@@ -37,12 +37,6 @@ fun BookDetailsScreen(
     navController: NavController
 ) {
     // observe on book details
-//    val bookDetails = BookDetails(
-//        imageURL = "https://covers.openlibrary.org/b/id/10071047-S.jpg",
-//        description = "A gargantuan, mind-altering comedy about the Pursuit of Happiness in America Set in an addicts' halfway house and a tennis academy, and featuring the most endearingly screwed-up family to come along in recent fiction, Infinite Jest explores essential questions about what entertainment is and why it has come to so dominate our lives; about how our desire for entertainment affects our need to connect with other people; and about what the pleasures we choose say about who we are. Equal parts philosophical quest and screwball comedy, Infinite Jest bends every rule of fiction without sacrificing for a moment its own entertainment value. It is an exuberant, uniquely American exploration of the passions that make us human - and one of those rare books that renew the idea of what a novel can do. ",
-//        title = "Infinite Jest",
-//    )
-
     val details = bookDetails.observeAsState().value
     if (details != null) {
         BookDetailsScreen(
@@ -51,8 +45,6 @@ fun BookDetailsScreen(
             title = details.title,
             navigate =  { /**consider error handling*/ navController.popBackStack() }
         )
-    } else {
-
     }
 
 }
