@@ -9,6 +9,9 @@ import com.example.openlibraryandroidassessment.data.models.Book
 import com.example.openlibraryandroidassessment.data.models.BookData
 import com.example.openlibraryandroidassessment.data.models.Subject
 
+/**
+ * Creates and handles operations for SQLite database to store OpenLibrary Information
+ */
 class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
@@ -111,6 +114,9 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
         }
     }
 
+    /**
+     * Queries db for all books that contain the subject with id subjectID
+     */
     fun getBooksBySubjectId(subjectId: Int): List<Book> {
         val db = writableDatabase
         val booksList = mutableListOf<Book>()
@@ -123,7 +129,6 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
         WHERE bs.subject_id = ?
     """
 
-        // Execute the query
         val cursor = db.rawQuery(query, arrayOf(subjectId.toString()))
 
         // Loop through the results
@@ -157,6 +162,9 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
         return booksList
     }
 
+    /**
+     * Queries db for subject of subjectID
+     */
     fun getSubjectNameById(subjectId: Int): String? {
         val db = writableDatabase
         var subjectName: String? = null
@@ -164,7 +172,6 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
         // Query to retrieve the subject name by its ID
         val query = "SELECT name FROM subjects WHERE id = ?"
 
-        // Execute the query
         val cursor = db.rawQuery(query, arrayOf(subjectId.toString()))
 
         // Loop through the results
@@ -179,6 +186,9 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
         return subjectName
     }
 
+    /**
+     * Queries db for book of bookID
+     */
     fun getBookById(bookId: Int): Book {
         val db = readableDatabase
         val cursor = db.query(
@@ -214,6 +224,9 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
         return book
     }
 
+    /**
+     * Deletes all tables in the db
+     */
     fun wipeDataBase() {
         val db = writableDatabase
         db.execSQL("DELETE FROM books")
@@ -221,6 +234,9 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
         db.execSQL("DELETE FROM book_subject")
     }
 
+    /**
+     * Returns a map of Subject Name (String) to Subject data struct built from subjects in the db
+     */
     fun groupBooksBySubjectAndMapToSubjectStruct(): Map<String, Subject> {
         val db = writableDatabase
         val query = """

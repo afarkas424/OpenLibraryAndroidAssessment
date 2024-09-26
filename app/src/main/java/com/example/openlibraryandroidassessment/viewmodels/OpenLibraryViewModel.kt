@@ -20,22 +20,22 @@ class OpenLibraryViewModel(
 ) : ViewModel() {
 
     /**
-     * Live data for the list of subjects to display on subject screen
+     * Reference to live data for the list of subjects to display on subject screen
      */
     val subjectList: LiveData<List<Subject>> = bookRepo.subjectList
 
     /**
-     * Live data for the list of books to display on books screen
+     * Reference to live data for the list of books to display on books screen
      */
     val bookList: LiveData<List<Book>> = bookRepo.bookList
 
     /**
-     * Live data for the subject name to be displayed on books screen
+     * Reference to live data for the subject name to be displayed on books screen
      */
     val selectedSubjectTitle: LiveData<String> = bookRepo.selectedSubjectTitle
 
     /**
-     * Live data for information to be displayed on the book details screen
+     * Reference to live data for information to be displayed on the book details screen
      */
     val bookDetails: LiveData<BookDetailsScreenInformation> = bookRepo.bookDetails
 

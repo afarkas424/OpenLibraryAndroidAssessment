@@ -184,18 +184,37 @@ class OpenLibraryDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
     private val httpClient: OkHttpClient = OkHttpClient()
     private val jsonParser = Json { ignoreUnknownKeys = true }
 
+    /**
+     * Live data to post list of subjects to view model
+     */
     private val _subjectList = MutableLiveData<List<Subject>>()
     val subjectList: LiveData<List<Subject>> get() = _subjectList
 
+    /**
+     * Live data to post list of books of selected subject to view model
+     */
     private val _bookList = MutableLiveData<List<Book>>()
     val bookList: LiveData<List<Book>> get() = _bookList
 
+    /**
+     * Live data to post selected subject name to view model
+     */
     private val _selectedSubjectTitle = MutableLiveData<String>()
     val selectedSubjectTitle: LiveData<String> get() = _selectedSubjectTitle
 
+    /**
+     * Live data to post book details screen information to view model
+     */
     private val _bookDetails: MutableLiveData<BookDetailsScreenInformation> = MutableLiveData()
     val bookDetails: LiveData<BookDetailsScreenInformation> get() = _bookDetails
 
+    /**
+     * Fetches star wars book data from Open Library API and inserts it into the db.
+     *
+     * Queries DB for all subjects, and creates Subject structs based on aggregated information
+     *
+     * Posts a List of Subjects to the view model.
+     */
     fun fetchSubjectGroupsAndInsertInLocalDatabase() {
         val books = fetchStarWarsBooksFromOpenLibraryAPI()
         bookDatabase.insertBooksAndSubjects(books)
@@ -204,7 +223,10 @@ class OpenLibraryDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
         _subjectList.postValue(subjectTitleToSubjectMap.values.toList())
     }
 
-
+    /**
+     * Returns all books in the db that contain subject of subject ID, and posts books and selected
+     * subject title to the view model
+     */
     fun getBooksForSelectedSubjectFromLocalDatabase(subjectID: Int) {
         val books = bookDatabase.getBooksBySubjectId(subjectID)
         _bookList.postValue(books)
@@ -213,6 +235,9 @@ class OpenLibraryDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
         _selectedSubjectTitle.postValue(selectedSubjectName ?: "Books")
     }
 
+    /**
+     * Calls helper functions to query OpenLibrary for book details, and posts the details to view model
+     */
      fun retrieveAndPostBookDetailsScreenData(bookID: Int) {
         val selectedBook = bookDatabase.getBookById(bookID)
         val details = fetchBookDetailsFromOpenLibraryAPI(selectedBook.detailsKey)
@@ -225,6 +250,10 @@ class OpenLibraryDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
         _bookDetails.postValue(detailsScreenInfo)
     }
 
+    /**
+     * Queries OpenLibrary API for book data at url "https://openlibrary.org$detailsKey.json" and parses response into
+     * the work response class, which holds the description in the description sealed class
+     */
     private fun fetchBookDetailsFromOpenLibraryAPI(detailsKey: String): String? {
         val url = "https://openlibrary.org$detailsKey.json"
         val request = Request.Builder().url(url).build()
@@ -241,6 +270,9 @@ class OpenLibraryDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
         }
     }
 
+    /**
+     * Queries OpenLibrary API for star wars books and processors results into a List of BookData
+     */
     private fun fetchStarWarsBooksFromOpenLibraryAPI(): List<BookData> {
         val allBooks = mutableListOf<BookData>()
         var page = 1
@@ -267,6 +299,9 @@ class OpenLibraryDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
         return allBooks
     }
 
+    /**
+     * Executes provided request
+     */
     private fun executeRequest(request: Request): String? {
         return try {
             httpClient.newCall(request).execute().use { response ->
