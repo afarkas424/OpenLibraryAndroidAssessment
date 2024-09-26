@@ -1,6 +1,6 @@
-﻿# OpenLibraryAndroidAssessment
+﻿# Open Library Android Assessment
 
- This is my submission for the OpenLibraryAndroidAssessment.
+ This is my submission for the Open Library Android Assessment.
 
 ## Front End Overview
   The application follows the MVVM pattern and features a declarative UI built with Jetpack Compose. Any composables that collect on live datas have stateful and stateless versions; the stateful composables observe the ViewModel's LiveData flows and provide data to their stateless counterparts. Each stateless composable includes a preview. Navigation is managed through a composable navigation graph, which communicates user selections to the ViewModel via route parameters.
