@@ -54,6 +54,16 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
         onCreate(db)
     }
 
+    /**
+     * Inserts a list of books and their associated subjects into the database.
+     *
+     * @param books A list of BookData containing book details and subjects.
+     *
+     * This function performs the following:
+     *  -Collects unique subjects and inserts them into the subjects table.
+     *  -Inserts book details into the books table.
+     *  -Links books to their subjects in the book_subject table.
+     */
     fun insertBooksAndSubjects(books: List<BookData>) {
         // open db, begin transaction
         val db = writableDatabase
