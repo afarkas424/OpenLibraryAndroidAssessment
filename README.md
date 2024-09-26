@@ -2,6 +2,11 @@
 
  This is my submission for the OpenLibraryAndroidAssessment.
 
+ ![SubjectsScreen](https://github.com/user-attachments/assets/db62c494-1159-446c-a0e8-389a4b728e97)
+ ![Screenshot 2024-09-25 231009](https://github.com/user-attachments/assets/00338aa6-139a-4da2-90fe-491d5aa8e86a)
+ ![Screenshot 2024-09-25 231129](https://github.com/user-attachments/assets/2a0ac715-932e-4fb0-a9bc-99dc8c0152ce)
+
+
 ## Front End Overview
   The application follows the MVVM pattern and features a declarative UI built with Jetpack Compose. Any composables that collect on live datas have stateful and stateless versions; the stateful composables observe the ViewModel's LiveData flows and provide data to their stateless counterparts. Each stateless composable includes a preview. Navigation is managed through a composable navigation graph, which communicates user selections to the ViewModel via route parameters.
 
