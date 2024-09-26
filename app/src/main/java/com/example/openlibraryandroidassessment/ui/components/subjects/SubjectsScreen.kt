@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
@@ -22,7 +23,6 @@ import com.example.openlibraryandroidassessment.data.models.Subject
  */
 @Composable
 fun SubjectsScreen(
-    /**viewmodel.subjectsFlow*/
     navigateToBookScreen: (String) -> Unit,
     subjectLiveData: LiveData<List<Subject>>,
                    ) {
@@ -33,7 +33,7 @@ fun SubjectsScreen(
             navigateToBookScreen = navigateToBookScreen
         )
     } else {
-        LoadingScreen(message = "Please allow 12-13 seconds to load and process library data...")
+        LoadingScreen(message = "Please allow 12-13 seconds to load and process OpenLibrary data...")
     }
 
 
@@ -48,7 +48,8 @@ fun SubjectsScreen(subjects: List<Subject>, navigateToBookScreen: (String) -> Un
     Column {
         CenterAlignedTopAppBar(
             title = { Text(
-                text = "Subjects"
+                text = "Subjects",
+                fontWeight = FontWeight.Bold
             )},
         )
         LazyColumn {

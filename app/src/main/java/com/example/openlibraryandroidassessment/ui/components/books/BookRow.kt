@@ -20,7 +20,7 @@ import com.example.openlibraryandroidassessment.data.models.Book
 
 
 /**
- * Composable for showing a books cover, title, and author with no navigation for preview
+ *  Stateless composable for showing a books cover, title, and author with no navigation for preview
  */
 @Composable
 fun BookRow(

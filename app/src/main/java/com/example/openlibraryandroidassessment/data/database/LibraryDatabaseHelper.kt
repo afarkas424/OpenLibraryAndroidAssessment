@@ -63,25 +63,14 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
                 subjectSet.addAll(book.subject)
             }
 
-            // Fetch existing subjects
-            val existingSubjects = mutableMapOf<String, Long>()
-            val placeholders = subjectSet.joinToString(", ") { "?" }
-            val cursor = db.query("subjects", arrayOf("id", "name"), "name IN ($placeholders)", subjectSet.toTypedArray(), null, null, null)
-            while (cursor.moveToNext()) {
-                existingSubjects[cursor.getString(1)] = cursor.getLong(0)
-            }
-            cursor.close()
-
-            // Insert new subjects and prepare a map for IDs
-            val newSubjectIds = mutableMapOf<String, Long>()
+            // insert into db and get subject ids
+            val subjectIds = mutableMapOf<String, Long>()
             subjectSet.forEach { subject ->
-                if (!existingSubjects.containsKey(subject)) {
-                    val subjectValues = ContentValues().apply {
-                        put("name", subject)
-                    }
-                    val newId = db.insert("subjects", null, subjectValues)
-                    newSubjectIds[subject] = newId
+                val subjectValues = ContentValues().apply {
+                    put("name", subject)
                 }
+                val newId = db.insert("subjects", null, subjectValues)
+                subjectIds[subject] = newId
             }
 
             // Now insert books and their subjects
@@ -94,16 +83,18 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
                     put("details_key", book.key)
                 }
 
+                // add to books table
                 val bookId = db.insert("books", null, bookValues)
 
                 book.subject.forEach { subject ->
-                    val subjectId = existingSubjects[subject] ?: newSubjectIds[subject] ?: -1
+                    val subjectId = subjectIds[subject] ?: -1
                     if (subjectId != -1L) {
                         val bookSubjectValues = ContentValues().apply {
                             put("book_id", bookId)
                             put("subject_id", subjectId)
                         }
                         try {
+                            // add book_subject table
                             db.insert("book_subject", null, bookSubjectValues)
                         } catch (e: Exception) {
                             Log.e("LibraryDatabaseHelper", "Error inserting into book_subject: ${e.message}", e)
@@ -112,12 +103,11 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
                     }
                 }
             }
-            // Complete transaction
             db.setTransactionSuccessful()
-        } catch (e: Exception) {
-            // Handle any exceptions as needed
+        } catch (_: Exception) {
+
         } finally {
-            db.endTransaction() // End the transaction
+            db.endTransaction()
         }
     }
 
@@ -146,7 +136,7 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
                 val publishedYearColumnIndex = cursor.getColumnIndex("published_year")
                 val detailsKeyColumnIndex = cursor.getColumnIndex("details_key")
 
-                // Ensure column indices are valid (greater than -1)
+                // Ensure column indices are valid (not -1)
                 if (idColumnIndex != -1 && titleColumnIndex != -1 && authorsColumnIndex != -1
                     && imageNumColumnIndex != -1 && publishedYearColumnIndex != -1 && detailsKeyColumnIndex != -1) {
 

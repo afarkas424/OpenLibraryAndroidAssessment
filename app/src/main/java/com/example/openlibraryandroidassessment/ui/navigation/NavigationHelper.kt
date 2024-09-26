@@ -10,7 +10,7 @@ import com.example.openlibraryandroidassessment.ui.components.subjects.SubjectsS
 import com.example.openlibraryandroidassessment.viewmodels.OpenLibraryViewModel
 
 /**
- * Configures the app's navigation controller. Utilizes route parameters to inform view model of
+ * Builds navigation graph. Utilizes route parameters to inform view model of
  * selected subject or book.
  */
 @Composable
@@ -28,10 +28,8 @@ fun NavigationSetup(
         }
         composable("books/{subjectId}") { backStackEntry ->
             val subjectId = backStackEntry.arguments?.getString("subjectId") ?: ""
-
-            // todo: could improve this, not sure if navController should trigger anything in view model
+            // inform view model which subject was clicked
             viewModel.onSubjectClicked(subjectId.toInt())
-
             BooksScreen(
                 navigateBack = { navHostController.popBackStack() },
                 navigateToBookDetails = { route:String -> navHostController.navigate(route) },
@@ -41,7 +39,7 @@ fun NavigationSetup(
         }
         composable("bookDetails/{bookId}") { backStackEntry ->
             val bookId = backStackEntry.arguments?.getString("bookId") ?: ""
-            // todo: send selected ID to the desired View Model to post to shared flow
+            // inform view model which book was clicked
             viewModel.onBookClicked(bookId.toInt())
             BookDetailsScreen(
                 bookDetails = viewModel.bookDetails,

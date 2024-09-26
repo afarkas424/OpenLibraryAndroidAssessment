@@ -179,7 +179,7 @@ import kotlinx.serialization.json.JsonElement
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-class BookDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
+class OpenLibraryDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
 
     private val httpClient: OkHttpClient = OkHttpClient()
     private val jsonParser = Json { ignoreUnknownKeys = true }
@@ -213,11 +213,6 @@ class BookDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
         _selectedSubjectTitle.postValue(selectedSubjectName ?: "Books")
     }
 
-    /**
-     * Retrieves detailed information for a specific book and posts it to LiveData.
-     *
-     * @param bookID The ID of the book for which details are to be retrieved.
-     */
      fun retrieveAndPostBookDetailsScreenData(bookID: Int) {
         val selectedBook = bookDatabase.getBookById(bookID)
         val details = fetchBookDetailsFromOpenLibraryAPI(selectedBook.detailsKey)
@@ -230,12 +225,6 @@ class BookDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
         _bookDetails.postValue(detailsScreenInfo)
     }
 
-    /**
-     * Fetches book details from the Open Library API using the provided details key.
-     *
-     * @param detailsKey The key to identify the specific book details.
-     * @return The description of the book, or null if not found.
-     */
     private fun fetchBookDetailsFromOpenLibraryAPI(detailsKey: String): String? {
         val url = "https://openlibrary.org$detailsKey.json"
         val request = Request.Builder().url(url).build()
@@ -246,17 +235,12 @@ class BookDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
             }
             when (val desc = workResponse.description) {
                 is Description.Simple -> desc.value
-                is Description.Complex -> desc.value // Adjust as needed
+                is Description.Complex -> desc.value
                 null -> null
             }
         }
     }
 
-    /**
-     * Fetches all Star Wars books from the Open Library API across multiple pages.
-     *
-     * @return A list of BookData containing all Star Wars books found.
-     */
     private fun fetchStarWarsBooksFromOpenLibraryAPI(): List<BookData> {
         val allBooks = mutableListOf<BookData>()
         var page = 1
@@ -283,12 +267,6 @@ class BookDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
         return allBooks
     }
 
-    /**
-     * Executes the given HTTP request and returns the response body as a string.
-     *
-     * @param request The HTTP request to be executed.
-     * @return The response body as a string, or null if the request failed.
-     */
     private fun executeRequest(request: Request): String? {
         return try {
             httpClient.newCall(request).execute().use { response ->

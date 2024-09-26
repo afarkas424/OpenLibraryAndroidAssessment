@@ -8,18 +8,25 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import com.example.openlibraryandroidassessment.data.models.Book
 
+/**
+ * Stateful subject screen composable
+ */
 @Composable
 fun BooksScreen(
-    /**book view model*/
     navigateBack: () -> Unit,
     navigateToBookDetails: (route: String) -> Unit,
     booksLiveData: LiveData<List<Book>>,
@@ -35,7 +42,7 @@ fun BooksScreen(
             subjectName = subjectName ?: "Books"
         )
     } else {
-        LoadingScreen("Please allow 12-13 seconds to load library data")
+        LoadingScreen("Please allow 12-13 seconds to load OpenLibrary data")
     }
 
 
@@ -54,7 +61,10 @@ fun BooksScreen(
 ) {
     Column {
         CenterAlignedTopAppBar(
-            title = { Text(subjectName) },
+            title = { Text(
+                text = subjectName,
+                fontWeight = FontWeight.Bold
+            ) },
             navigationIcon = {
                 IconButton(onClick = { navigateBack.invoke() }) {
                     Icon(
@@ -69,6 +79,11 @@ fun BooksScreen(
                 BookRow(
                     book = book,
                     navigateToBookDetails = navigateToBookDetails
+                )
+                HorizontalDivider(
+                    modifier = Modifier,
+                    thickness = 1.dp,
+                    color = Color.Gray
                 )
             }
         }

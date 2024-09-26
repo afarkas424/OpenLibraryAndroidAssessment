@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import com.example.openlibraryandroidassessment.data.database.LibraryDatabaseHelper
-import com.example.openlibraryandroidassessment.data.repositories.BookDataRepo
+import com.example.openlibraryandroidassessment.data.repositories.OpenLibraryDataRepo
 import com.example.openlibraryandroidassessment.ui.navigation.NavigationSetup
 import com.example.openlibraryandroidassessment.ui.theme.OpenLibraryAndroidAssessmentTheme
 import com.example.openlibraryandroidassessment.viewmodels.OpenLibraryViewModel
@@ -26,8 +26,7 @@ class MainActivity : ComponentActivity() {
 
         setupDatabase()
 
-        // Todo: the activity doesn't need to store the repo, just pass desired callbacks into the view models
-        val bookDataRepo = BookDataRepo(dbHelper!!)
+        val bookDataRepo = OpenLibraryDataRepo(dbHelper!!)
         libraryViewModel = OpenLibraryViewModel(bookDataRepo)
 
         // with VM created, begin to load subjects in background thread
@@ -36,11 +35,9 @@ class MainActivity : ComponentActivity() {
         }
 
 
-        // maybe initially set content to a loading circle or something?
         setContent {
             // instantiate navigation controller
             val navController = rememberNavController()
-
             OpenLibraryAndroidAssessmentTheme {
                 // create navigation graph with navigation controller
                 NavigationSetup(navController, libraryViewModel)
@@ -60,7 +57,7 @@ class MainActivity : ComponentActivity() {
      */
     private fun setupDatabase() {
         dbHelper = LibraryDatabaseHelper(applicationContext)
-        // clear the database. //todo if database exists, don't wipe or do the read
+        // clear the database on application launch
         dbHelper?.wipeDataBase()
     }
 
