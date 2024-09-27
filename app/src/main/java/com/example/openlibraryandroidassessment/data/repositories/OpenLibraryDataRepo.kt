@@ -49,8 +49,8 @@ class OpenLibraryDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
         val books = fetchStarWarsBooksFromOpenLibraryAPI()
         bookDatabase.insertBooksAndSubjects(books)
 
-        val subjectTitleToSubjectMap = bookDatabase.groupBooksBySubjectAndMapToSubjectStruct()
-        _subjectList.postValue(subjectTitleToSubjectMap.values.toList())
+        val subjects = bookDatabase.groupBooksBySubjectAndCreateSubjects()
+        _subjectList.postValue(subjects)
     }
 
     /**

@@ -245,9 +245,9 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
     }
 
     /**
-     * Returns a map of Subject Name (String) to Subject data struct built from subjects in the db
+     * Returns a List of Subject structs
      */
-    fun groupBooksBySubjectAndMapToSubjectStruct(): Map<String, Subject> {
+    fun groupBooksBySubjectAndCreateSubjects(): List<Subject> {
         val db = writableDatabase
         val query = """
         SELECT subjects.name AS subject,
@@ -261,7 +261,7 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
     """
 
         val cursor = db.rawQuery(query, null)
-        val resultMap = mutableMapOf<String, Subject>()
+        val subjects = mutableListOf<Subject>()
 
         while (cursor.moveToNext()) {
             val subjectColumnIndex = cursor.getColumnIndex("subject")
@@ -272,15 +272,18 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
                 val count = cursor.getInt(countColumnIndex)
                 val subjectId = cursor.getInt(subjectIDColumnIndex)
 
-                resultMap[subject] = Subject(
-                    name = subject,
-                    count = count,
-                    id = subjectId
+                // add subject to list
+                subjects.add(
+                    Subject(
+                        name = subject,
+                        count = count,
+                        id = subjectId
+                    )
                 )
             }
         }
         cursor.close()
 
-        return resultMap
+        return subjects
     }
 }

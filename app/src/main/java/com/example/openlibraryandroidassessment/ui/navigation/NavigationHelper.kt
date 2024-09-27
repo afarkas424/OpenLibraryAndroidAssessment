@@ -11,8 +11,7 @@ import com.example.openlibraryandroidassessment.ui.components.subjects.SubjectsS
 import com.example.openlibraryandroidassessment.viewmodels.OpenLibraryViewModel
 
 /**
- * Builds navigation graph. Utilizes route parameters to inform view model of
- * selected subject or book.
+ * Builds navigation graph.
  */
 @Composable
 fun NavigationGraph(
