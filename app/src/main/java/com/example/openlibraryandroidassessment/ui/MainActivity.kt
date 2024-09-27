@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import com.example.openlibraryandroidassessment.data.database.LibraryDatabaseHelper
 import com.example.openlibraryandroidassessment.data.repositories.OpenLibraryDataRepo
-import com.example.openlibraryandroidassessment.ui.navigation.NavigationSetup
+import com.example.openlibraryandroidassessment.ui.navigation.NavigationGraph
 import com.example.openlibraryandroidassessment.ui.theme.OpenLibraryAndroidAssessmentTheme
 import com.example.openlibraryandroidassessment.viewmodels.OpenLibraryViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -36,11 +36,9 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-            // instantiate navigation controller
-            val navController = rememberNavController()
             OpenLibraryAndroidAssessmentTheme {
                 // create navigation graph with navigation controller
-                NavigationSetup(navController, libraryViewModel)
+                NavigationGraph(libraryViewModel)
 
             }
         }

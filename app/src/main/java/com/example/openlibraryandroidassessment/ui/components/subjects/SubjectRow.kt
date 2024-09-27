@@ -4,7 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,9 +24,9 @@ import com.example.openlibraryandroidassessment.ui.theme.Typography
 fun SubjectRow(
     name: String,
     count: String,
-    subjectID: String,
-    navigateToBookScreen: (String) -> Unit
-    ) {
+    subjectID: Int,
+    navigateToBookScreen: (Int) -> Unit
+) {
     // Row layout for the subject
     Row(
         modifier = Modifier
@@ -34,7 +34,7 @@ fun SubjectRow(
             .padding(16.dp)
             .clickable {
                 // Navigate to the books screen for the selected subject
-                navigateToBookScreen.invoke("books/${subjectID}")
+                navigateToBookScreen.invoke(subjectID)
             },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -59,7 +59,7 @@ fun SubjectRow(
             )
             // Chevron icon
             Icon(
-                imageVector = Icons.Default.KeyboardArrowRight,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = "Navigate",
                 tint = Color.Gray
             )
@@ -70,10 +70,10 @@ fun SubjectRow(
 @Preview
 @Composable
 fun SubjectRowPreview() {
-    val populatedSubject = Subject( id = 1, name = "Science Fiction", count = 37)
+    val populatedSubject = Subject(id = 1, name = "Science Fiction", count = 37)
     SubjectRow(
         name = populatedSubject.name,
         count = populatedSubject.count.toString(),
-        subjectID = populatedSubject.id.toString()
+        subjectID = populatedSubject.id
     ) { }
 }

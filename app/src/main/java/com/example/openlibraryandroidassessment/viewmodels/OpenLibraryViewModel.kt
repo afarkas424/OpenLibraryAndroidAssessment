@@ -1,12 +1,14 @@
 package com.example.openlibraryandroidassessment.viewmodels
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.openlibraryandroidassessment.data.models.Book
 import com.example.openlibraryandroidassessment.data.models.BookDetailsScreenInformation
 import com.example.openlibraryandroidassessment.data.models.Subject
 import com.example.openlibraryandroidassessment.data.repositories.OpenLibraryDataRepo
+import com.example.openlibraryandroidassessment.ui.navigation.NavigationEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -18,6 +20,12 @@ import kotlinx.coroutines.launch
 class OpenLibraryViewModel(
     private val bookRepo: OpenLibraryDataRepo
 ) : ViewModel() {
+
+    /**
+     * Live data for navigation event. When observed, will trigger view models response to user navigation.
+     */
+    private val _navigationEvent = MutableLiveData<NavigationEvent>()
+    val navigationEvent: LiveData<NavigationEvent> get() = _navigationEvent
 
     /**
      * Reference to live data for the list of subjects to display on subject screen
@@ -45,6 +53,9 @@ class OpenLibraryViewModel(
      * @param subjectId, the integer ID of the clicked subject
      */
     fun onSubjectClicked(subjectId: Int) {
+        // trigger navigation to books screen
+        _navigationEvent.postValue(NavigationEvent.NavigateToBooksScreen)
+
         // inform the repo of the selected subject and load desired books
         viewModelScope.launch(Dispatchers.IO) {
             bookRepo.getBooksForSelectedSubjectFromLocalDatabase(subjectId)
@@ -54,16 +65,31 @@ class OpenLibraryViewModel(
     /**
      * Called when a book is clicked on the book screen
      *
-     * @param bookid, the integer ID of the clicked book
+     * @param bookId, the integer ID of the clicked book
      */
     fun onBookClicked(bookID: Int) {
+        // trigger navigation to book details screen
+        _navigationEvent.postValue(NavigationEvent.NavigateToBookDetailsScreen)
+
+        // retrieve book details and post to screen
         viewModelScope.launch(Dispatchers.IO) {
             bookRepo.retrieveAndPostBookDetailsScreenData(bookID)
         }
-
     }
 
+    /**
+     * Called when the user selects the back button from book details page.
+     */
+    fun onBackToBooksClicked() {
+        // trigger navigation to books screen
+        _navigationEvent.postValue(NavigationEvent.NavigateToBooksScreen)
+    }
 
-
-
+    /**
+     * Called when the user selects the back button from book details page.
+     */
+    fun onBackToSubjectsClicked() {
+        // trigger back navigation
+        _navigationEvent.postValue(NavigationEvent.NavigateToSubjectsScreen)
+    }
 }

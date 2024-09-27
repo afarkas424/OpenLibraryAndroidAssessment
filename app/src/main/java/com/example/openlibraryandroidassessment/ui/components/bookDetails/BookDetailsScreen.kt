@@ -34,40 +34,43 @@ import com.example.openlibraryandroidassessment.ui.theme.Typography
 @Composable
 fun BookDetailsScreen(
     bookDetails: LiveData<BookDetailsScreenInformation>,
-    navController: NavController
+    navigateBack: () -> Unit
 ) {
     // observe on book details
     val details = bookDetails.observeAsState().value
     if (details != null) {
         BookDetailsScreen(
             imageUrl = details.imgURL,
-            text= details.description,
+            text = details.description,
             title = details.title,
-            navigate =  { /**consider error handling*/ navController.popBackStack() }
+            navigateBack = navigateBack
         )
     }
 
 }
+
 /**
  * Stateless book details composable
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookDetailsScreen(
-    imageUrl:String,
-    text:String,
+    imageUrl: String,
+    text: String,
     title: String,
-    navigate: () -> Unit
+    navigateBack: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column {
         CenterAlignedTopAppBar(
-            title = { Text(
-                text = title,
-                fontWeight = FontWeight.Bold
-            ) },
+            title = {
+                Text(
+                    text = title,
+                    fontWeight = FontWeight.Bold
+                )
+            },
             navigationIcon = {
-                IconButton(onClick = { navigate.invoke() }) {
+                IconButton(onClick = { navigateBack.invoke() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Localized description"
@@ -86,7 +89,9 @@ fun BookDetailsScreen(
             AsyncImage(
                 model = imageUrl,
                 contentDescription = "Book Cover",
-                modifier = Modifier.fillMaxWidth().height(300.dp), // fixed height of 300
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp), // fixed height of 300
                 error = painterResource(id = R.drawable.image_placeholder),
                 placeholder = painterResource(id = R.drawable.image_placeholder)
             )
@@ -112,9 +117,9 @@ fun BookDetailsScreenPreview() {
 
     BookDetailsScreen(
         imageUrl = bookDetails.imgURL,
-        text= bookDetails.description,
+        text = bookDetails.description,
         title = bookDetails.title,
-        navigate = {}
+        navigateBack = {}
     )
 
 }

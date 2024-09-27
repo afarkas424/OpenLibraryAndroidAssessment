@@ -1,9 +1,10 @@
 package com.example.openlibraryandroidassessment.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.openlibraryandroidassessment.ui.components.bookDetails.BookDetailsScreen
 import com.example.openlibraryandroidassessment.ui.components.books.BooksScreen
 import com.example.openlibraryandroidassessment.ui.components.subjects.SubjectsScreen
@@ -14,37 +15,73 @@ import com.example.openlibraryandroidassessment.viewmodels.OpenLibraryViewModel
  * selected subject or book.
  */
 @Composable
-fun NavigationSetup(
-    navHostController: NavHostController,
+fun NavigationGraph(
     viewModel: OpenLibraryViewModel
 ) {
+    // Instantiate navigation controller
+    val navController = rememberNavController()
+
+    // Observe on navigation events
+    viewModel.navigationEvent.observeAsState().value?.let { navigationEvent ->
+        when (navigationEvent) {
+            is NavigationEvent.NavigateToBooksScreen -> {
+                navController.navigate("books")
+            }
+
+            is NavigationEvent.NavigateToBookDetailsScreen -> {
+                navController.navigate("bookDetails")
+            }
+
+            is NavigationEvent.NavigateToSubjectsScreen -> {
+                navController.navigate("subjects")
+            }
+        }
+    }
+
+
     // Initially start at subjects screen
-    NavHost(navHostController, startDestination = "subjects") {
+    NavHost(navController, startDestination = "subjects") {
         composable("subjects") {
             SubjectsScreen(
-                navigateToBookScreen = { route:String -> navHostController.navigate(route) },
+                navigateToBookScreen = viewModel::onSubjectClicked,
                 subjectLiveData = viewModel.subjectList
             )
         }
-        composable("books/{subjectId}") { backStackEntry ->
-            val subjectId = backStackEntry.arguments?.getString("subjectId") ?: ""
-            // inform view model which subject was clicked
-            viewModel.onSubjectClicked(subjectId.toInt())
+        composable("books") {
             BooksScreen(
-                navigateBack = { navHostController.popBackStack() },
-                navigateToBookDetails = { route:String -> navHostController.navigate(route) },
+                navigateBack = viewModel::onBackToSubjectsClicked,
+                navigateToBookDetails = viewModel::onBookClicked,
                 booksLiveData = viewModel.bookList,
                 subjectNameLiveData = viewModel.selectedSubjectTitle
             )
         }
-        composable("bookDetails/{bookId}") { backStackEntry ->
-            val bookId = backStackEntry.arguments?.getString("bookId") ?: ""
-            // inform view model which book was clicked
-            viewModel.onBookClicked(bookId.toInt())
+        composable("bookDetails") {
             BookDetailsScreen(
                 bookDetails = viewModel.bookDetails,
-                navController = navHostController
+                navigateBack = viewModel::onBackToBooksClicked
             )
         }
     }
+}
+
+/**
+ * Sealed class to enumerate the different navigation actions that the user can trigger
+ */
+sealed class NavigationEvent {
+
+    /**
+     * Navigation event for when user selects a subject
+     */
+    data object NavigateToBooksScreen : NavigationEvent()
+
+    /**
+     * Navigation event for when user selects a book
+     */
+    data object NavigateToBookDetailsScreen: NavigationEvent()
+
+    /**
+     * Navigation event for when user selects the back arrow from the bookDetailsScreen
+     */
+    data object NavigateToSubjectsScreen : NavigationEvent()
+
 }

@@ -3,7 +3,7 @@ package com.example.openlibraryandroidassessment.ui.components.books
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -25,13 +25,13 @@ import com.example.openlibraryandroidassessment.data.models.Book
 @Composable
 fun BookRow(
     book: Book,
-    navigateToBookDetails: (String) -> Unit
+    navigateToBookDetails: (Int) -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clickable { navigateToBookDetails.invoke("bookDetails/${book.id}")},
+            .clickable { navigateToBookDetails.invoke(book.id) },
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Async image for the book cover
@@ -61,8 +61,8 @@ fun BookRow(
         }
 
         // Chevron icon to indicate navigation
-        Icon (
-            imageVector = Icons.Filled.KeyboardArrowRight,
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = "Navigate",
             tint = Color.Gray
         )

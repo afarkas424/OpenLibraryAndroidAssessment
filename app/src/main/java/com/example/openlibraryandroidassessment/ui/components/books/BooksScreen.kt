@@ -28,7 +28,7 @@ import com.example.openlibraryandroidassessment.data.models.Book
 @Composable
 fun BooksScreen(
     navigateBack: () -> Unit,
-    navigateToBookDetails: (route: String) -> Unit,
+    navigateToBookDetails: (Int) -> Unit,
     booksLiveData: LiveData<List<Book>>,
     subjectNameLiveData: LiveData<String>
 ) {
@@ -56,15 +56,17 @@ fun BooksScreen(
 fun BooksScreen(
     books: List<Book>,
     navigateBack: () -> Unit,
-    navigateToBookDetails: (route: String) -> Unit,
+    navigateToBookDetails: (Int) -> Unit,
     subjectName: String
 ) {
     Column {
         CenterAlignedTopAppBar(
-            title = { Text(
-                text = subjectName,
-                fontWeight = FontWeight.Bold
-            ) },
+            title = {
+                Text(
+                    text = subjectName,
+                    fontWeight = FontWeight.Bold
+                )
+            },
             navigationIcon = {
                 IconButton(onClick = { navigateBack.invoke() }) {
                     Icon(

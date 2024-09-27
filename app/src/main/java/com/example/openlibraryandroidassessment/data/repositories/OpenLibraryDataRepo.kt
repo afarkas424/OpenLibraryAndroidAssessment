@@ -68,12 +68,12 @@ class OpenLibraryDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
     /**
      * Calls helper functions to query OpenLibrary for book details, and posts the details to view model
      */
-     fun retrieveAndPostBookDetailsScreenData(bookID: Int) {
+    fun retrieveAndPostBookDetailsScreenData(bookID: Int) {
         val selectedBook = bookDatabase.getBookById(bookID)
         val details = fetchBookDetailsFromOpenLibraryAPI(selectedBook.detailsKey)
 
         val detailsScreenInfo = BookDetailsScreenInformation(
-            title = selectedBook.title ?: "Book not found",
+            title = selectedBook.title,
             imgURL = "https://covers.openlibrary.org/b/id/${selectedBook.imageURLBase.plus("-L.jpg")}",
             description = details ?: "Description could not be found"
         )
@@ -109,7 +109,8 @@ class OpenLibraryDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
         var hasMore = true
 
         while (hasMore) {
-            val url = "https://openlibrary.org/search.json?q=subject:star%20wars&fields=key,title,author_key,author_name,first_publish_year,cover_i,subject&page=$page"
+            val url =
+                "https://openlibrary.org/search.json?q=subject:star%20wars&fields=key,title,author_key,author_name,first_publish_year,cover_i,subject&page=$page"
             val request = Request.Builder().url(url).build()
 
             executeRequest(request)?.let { jsonResponse ->

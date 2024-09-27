@@ -23,9 +23,9 @@ import com.example.openlibraryandroidassessment.data.models.Subject
  */
 @Composable
 fun SubjectsScreen(
-    navigateToBookScreen: (String) -> Unit,
+    navigateToBookScreen: (Int) -> Unit,
     subjectLiveData: LiveData<List<Subject>>,
-                   ) {
+) {
     val subjects = subjectLiveData.observeAsState().value
     if (subjects != null) {
         SubjectsScreen(
@@ -44,20 +44,25 @@ fun SubjectsScreen(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SubjectsScreen(subjects: List<Subject>, navigateToBookScreen: (String) -> Unit) {
+fun SubjectsScreen(
+    subjects: List<Subject>,
+    navigateToBookScreen: (Int) -> Unit
+) {
     Column {
         CenterAlignedTopAppBar(
-            title = { Text(
-                text = "Subjects",
-                fontWeight = FontWeight.Bold
-            )},
+            title = {
+                Text(
+                    text = "Subjects",
+                    fontWeight = FontWeight.Bold
+                )
+            },
         )
         LazyColumn {
             items(subjects) { subject ->
                 SubjectRow(
                     name = subject.name,
                     count = subject.count.toString(),
-                    subjectID = subject.id.toString(),
+                    subjectID = subject.id,
                     navigateToBookScreen = navigateToBookScreen
                 )
                 HorizontalDivider(
@@ -75,8 +80,8 @@ fun SubjectsScreen(subjects: List<Subject>, navigateToBookScreen: (String) -> Un
 @Composable
 fun SubjectsScreenPreview() {
     val subjects = listOf(
-        Subject( id = 1, name = "Science Fiction", count = 37),
-        Subject( id = 2, name = "True Crime", count = 42)
+        Subject(id = 1, name = "Science Fiction", count = 37),
+        Subject(id = 2, name = "True Crime", count = 42)
     )
     SubjectsScreen(
         subjects = subjects,

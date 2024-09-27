@@ -5,19 +5,10 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="LoadingScreenPreview">
+      <SelectionState runConfigName="PreviewHeaderBarWithNavigationIcon">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="LibraryDatabaseHelperTest">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="testInsertAndRetrieveBooksAndSubjects()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="testWipeDatabase()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="BooksScreenPreview">
+      <SelectionState runConfigName="PreviewHeaderBarWithoutNavigationIcon">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
