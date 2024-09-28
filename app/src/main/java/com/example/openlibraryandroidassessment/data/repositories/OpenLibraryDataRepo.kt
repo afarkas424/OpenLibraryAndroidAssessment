@@ -75,7 +75,7 @@ class OpenLibraryDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
         val detailsScreenInfo = BookDetailsScreenInformation(
             title = selectedBook.title,
             imgURL = "https://covers.openlibrary.org/b/id/${selectedBook.imageURLBase.plus("-L.jpg")}",
-            description = details ?: "Description could not be found"
+            description = details ?: "Description not found"
         )
         _bookDetails.postValue(detailsScreenInfo)
     }
