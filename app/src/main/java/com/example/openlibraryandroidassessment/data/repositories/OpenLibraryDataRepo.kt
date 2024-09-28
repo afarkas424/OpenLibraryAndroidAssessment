@@ -54,8 +54,8 @@ class OpenLibraryDataRepo(private val bookDatabase: LibraryDatabaseHelper) {
     }
 
     /**
-     * Returns all books in the db that contain subject of subject ID, and posts books and selected
-     * subject title to the view model
+     * Posts all books in the db that contain subject of subject ID to VM, and posts books and selected
+     * subject title
      */
     fun getBooksForSelectedSubjectFromLocalDatabase(subjectID: Int) {
         val books = bookDatabase.getBooksBySubjectId(subjectID)

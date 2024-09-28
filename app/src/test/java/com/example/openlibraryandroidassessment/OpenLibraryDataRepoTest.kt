@@ -29,19 +29,36 @@ class OpenLibraryDataRepoTest {
     @Mock
     private lateinit var bookDetailsObserver: Observer<BookDetailsScreenInformation>
 
+    private val mockBooks = listOf(
+        Book(
+            id = 1,
+            title = "key1",
+            publishedYear = 2000,
+            imageURLBase = "img",
+            authors = "Fitzgerald",
+            detailsKey = "daisy"
+        ),
+        Book(
+            id = 2,
+            title = "key1",
+            publishedYear = 2000,
+            imageURLBase = "img",
+            authors = "Fitzgerald",
+            detailsKey = "daisy"
+        ),
+    )
+
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
         openLibraryDataRepo = OpenLibraryDataRepo(mockDatabase)
         openLibraryDataRepo.selectedSubjectTitle.observeForever(selectedSubjectObserver)
         openLibraryDataRepo.bookDetails.observeForever(bookDetailsObserver)
-
     }
 
     @Test
     fun testGetBooksForSelectedSubjectFromLocalDatabase() {
         val subjectID = 1
-        val mockBooks = listOf(Book(1, "key1", 2000, imageURLBase = "img", authors = "Fitzgerald", detailsKey = "daisy"))
         val subjectName = "Subject1"
 
         // Mock the database responses
@@ -50,27 +67,27 @@ class OpenLibraryDataRepoTest {
 
         openLibraryDataRepo.getBooksForSelectedSubjectFromLocalDatabase(subjectID)
 
-        // LiveData updated correctly
+        // LiveData correctly posted with selected subject
         verify(selectedSubjectObserver).onChanged(subjectName)
     }
 
     @Test
     fun testRetrieveAndPostBookDetailsScreenData() {
-        val bookID = 1
-        val selectedBook = Book(1, "key1", 2000, imageURLBase = "img", authors = "Fitzgerald", detailsKey = "daisy")
+        val selectedBook = mockBooks[0]
 
         // Mock the database call
-        `when`(mockDatabase.getBookById(bookID)).thenReturn(selectedBook)
+        `when`(mockDatabase.getBookById(selectedBook.id)).thenReturn(selectedBook)
 
         // Call the method under test
-        openLibraryDataRepo.retrieveAndPostBookDetailsScreenData(bookID)
+        openLibraryDataRepo.retrieveAndPostBookDetailsScreenData(selectedBook.id)
 
-        // verify expected details returned
+        // verify expected details returned (http request failure)
         val expectedDetails = BookDetailsScreenInformation(
             title = "key1",
             imgURL = "https://covers.openlibrary.org/b/id/img-L.jpg",
             description = "Description could not be found" // Assuming it returns null
         )
+        // verify correct book details posted to live data
         verify(bookDetailsObserver).onChanged(expectedDetails)
     }
 }

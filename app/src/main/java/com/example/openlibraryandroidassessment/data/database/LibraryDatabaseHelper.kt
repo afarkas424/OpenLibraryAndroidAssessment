@@ -96,23 +96,30 @@ class LibraryDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
                     put("details_key", book.key)
                 }
 
+                var bookId: Long? = null
                 // add to books table
-                val bookId = db.insert("books", null, bookValues)
+                try {
+                    bookId = db.insert("books", null, bookValues)
+                } catch (e: Exception) {
+                    Log.e("LibraryDatabaseHelper", "Error inserting book into nooks table: ${e.message}", e)
+                }
 
-                book.subject.forEach { subject ->
-                    val subjectId = subjectIds[subject] ?: -1
-                    if (subjectId != -1L) {
-                        val bookSubjectValues = ContentValues().apply {
-                            put("book_id", bookId)
-                            put("subject_id", subjectId)
+                // if book inserted successfully, add subjects into db
+                bookId.let {
+                    book.subject.forEach { subject ->
+                        val subjectId = subjectIds[subject] ?: -1
+                        if (subjectId != -1L) {
+                            val bookSubjectValues = ContentValues().apply {
+                                put("book_id", bookId)
+                                put("subject_id", subjectId)
+                            }
+                            try {
+                                // add book_subject table
+                                db.insert("book_subject", null, bookSubjectValues)
+                            } catch (e: Exception) {
+                                Log.e("LibraryDatabaseHelper", "Error inserting into book_subject: ${e.message}", e)
+                            }
                         }
-                        try {
-                            // add book_subject table
-                            db.insert("book_subject", null, bookSubjectValues)
-                        } catch (e: Exception) {
-                            Log.e("LibraryDatabaseHelper", "Error inserting into book_subject: ${e.message}", e)
-                        }
-
                     }
                 }
             }

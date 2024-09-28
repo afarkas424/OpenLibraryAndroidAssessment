@@ -79,13 +79,17 @@ class LibraryDatabaseHelperTest {
         dbHelper.close()
     }
 
+    /**
+     * Tests db insertion, subjects creation, and that upon group by subject, only subjects with count > 1
+     * are returned.
+     */
     @Test
-    fun testInsertBooksAndSubjects() {
-
+    fun testInsertBooksAndSubjectsAndSubjectGrouping() {
+        // add books and subjects to db
         dbHelper.insertBooksAndSubjects(books)
 
         val subjects = dbHelper.groupBooksBySubjectAndCreateSubjects()
-        // ensures that only subjects with a count of books > 1 are returned
+        // ensures that only subjects with a count of books > 1 are returned by grouping
         assertEquals(2, subjects.size)
         assertEquals("Fantasy", subjects[0].name)
         assertEquals("Mystery", subjects[1].name)
@@ -96,6 +100,9 @@ class LibraryDatabaseHelperTest {
         assertEquals(2, mysteryBooksInDb.size)
     }
 
+    /**
+     * Tests db query for books that contain a subject of ID subject ID returns correct results
+     */
     @Test
     fun testGetBooksBySubjectId() {
         dbHelper.insertBooksAndSubjects(books)
@@ -103,23 +110,32 @@ class LibraryDatabaseHelperTest {
         val subjects = dbHelper.groupBooksBySubjectAndCreateSubjects()
         val fantasyBooks = dbHelper.getBooksBySubjectId(subjects[0].id)
 
-        // ensures 2 fantasy books were found id the DB
+        // ensures only 2 fantasy books were found in the DB
         assertEquals(2, fantasyBooks.size)
         assertEquals("The Lord of the Rings", fantasyBooks[0].title)
         assertEquals("The Lord of the Flies", fantasyBooks[1].title)
     }
 
+    /**
+     * Tests db read on subject by ID returns desired Subject
+     */
     @Test
     fun testGetSubjectNameById() {
         dbHelper.insertBooksAndSubjects(books)
 
         val subjects = dbHelper.groupBooksBySubjectAndCreateSubjects()
         val subjectName = dbHelper.getSubjectNameById(subjects[0].id)
+        val secondSubjectName = dbHelper.getSubjectNameById(subjects[1].id)
 
         assertNotNull(subjectName)
         assertEquals("Fantasy", subjectName)
+        assertNotNull(secondSubjectName)
+        assertEquals("Mystery", secondSubjectName)
     }
 
+    /**
+     * Tests db read on book by ID returns desired book
+     */
     @Test
     fun testGetBookById() {
         dbHelper.insertBooksAndSubjects(books)
