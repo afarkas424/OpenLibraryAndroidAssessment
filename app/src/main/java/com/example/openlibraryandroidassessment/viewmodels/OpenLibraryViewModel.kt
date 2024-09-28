@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.openlibraryandroidassessment.data.models.Book
 import com.example.openlibraryandroidassessment.data.models.BookDetailsScreenInformation
+import com.example.openlibraryandroidassessment.data.models.NavigationEvent
 import com.example.openlibraryandroidassessment.data.models.Subject
 import com.example.openlibraryandroidassessment.data.repositories.OpenLibraryDataRepo
-import com.example.openlibraryandroidassessment.ui.navigation.NavigationEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

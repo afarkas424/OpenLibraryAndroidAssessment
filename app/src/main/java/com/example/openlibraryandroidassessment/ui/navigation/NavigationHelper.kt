@@ -5,6 +5,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.openlibraryandroidassessment.data.models.NavigationEvent
 import com.example.openlibraryandroidassessment.ui.components.bookDetails.BookDetailsScreen
 import com.example.openlibraryandroidassessment.ui.components.books.BooksScreen
 import com.example.openlibraryandroidassessment.ui.components.subjects.SubjectsScreen
@@ -21,7 +22,7 @@ fun NavigationGraph(
     val navController = rememberNavController()
 
     // Observe on navigation events
-    viewModel.navigationEvent.observeAsState().value?.let { navigationEvent ->
+    viewModel.navigationEvent.observeAsState().value?.let { navigationEvent: NavigationEvent ->
         when (navigationEvent) {
             is NavigationEvent.NavigateToBooksScreen -> {
                 navController.navigate("books")
@@ -61,26 +62,4 @@ fun NavigationGraph(
             )
         }
     }
-}
-
-/**
- * Sealed class to enumerate the different navigation actions that the user can trigger
- */
-sealed class NavigationEvent {
-
-    /**
-     * Navigation event for when user selects a subject
-     */
-    data object NavigateToBooksScreen : NavigationEvent()
-
-    /**
-     * Navigation event for when user selects a book
-     */
-    data object NavigateToBookDetailsScreen: NavigationEvent()
-
-    /**
-     * Navigation event for when user selects the back arrow from the bookDetailsScreen
-     */
-    data object NavigateToSubjectsScreen : NavigationEvent()
-
 }

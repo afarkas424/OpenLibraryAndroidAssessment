@@ -72,13 +72,30 @@ dependencies {
     implementation(libs.coil.kt.coil.compose)
     implementation(libs.okhttp)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.junit.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.mockito.inline)
+
+
+    // required if you want to use Mockito for Android tests
+    androidTestCompileOnly(libs.mockito.core.vmockitoversion)
+    androidTestCompileOnly(libs.mockito.android)
+    testImplementation(libs.androidx.core.testing)
+    androidTestCompileOnly(libs.mockwebserver)
+    androidTestImplementation(libs.mockwebserver)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    androidTestImplementation(libs.androidx.runner)
+    testImplementation(libs.androidx.runner)
+    androidTestCompileOnly(libs.androidx.runner)
+    androidTestImplementation(libs.androidx.junit.v121)
 }
