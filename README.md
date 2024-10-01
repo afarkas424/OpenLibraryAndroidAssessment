@@ -1,6 +1,6 @@
 ﻿# Open Library Android Assessment
 
- This is my submission for the Open Library Android Assessment.
+ This application queries the OpenLibrary database for all books related to Star Wars, groups the books by subject, and displays a description of each book. Users can select a subject on the launch screen, and then see all books tagged with that subject. Users can then select a book to see an expanded cover image and a test description of the book.
 
 ## Front End Overview
   The application follows the MVVM pattern and features a declarative UI built with Jetpack Compose. Any composables that collect on live datas have stateful and stateless versions; the stateful composables observe the ViewModel's LiveData flows and provide data to their stateless counterparts. Each stateless composable includes a preview. Navigation is managed through a composable navigation graph that observes navigation events posted from the view model in response to user interaction.
